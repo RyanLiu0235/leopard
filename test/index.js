@@ -22,6 +22,12 @@ describe('leopard', function() {
       a: 1,
       b: 2
     })
+    var template_2 = leo('<p>I am Leopard<% \', AKA \' + (isOk ? nickname : realname) + \'!\' %></p>', {
+      isOk: true,
+      nickname: 'leo',
+      realname: 'leopard'
+    })
     assert.strictEqual(template, '<p>a + b = 3</p>')
+    assert.strictEqual(template_2, '<p>I am Leopard, AKA leo!</p>')
   })
 })
