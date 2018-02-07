@@ -1,10 +1,19 @@
 var leo = function(template, data) {
   var re = /<%(.+?)%>/g
+  var parsed = ''
+  var curMatched = null
+  var matched = null
 
-  var matched = re.exec(template)
-  return template.substr(0, matched.index) +
-    data[matched[1].trim()] +
-    template.substr(matched.index + matched[0].length)
+  while (curMatched = re.exec(template)) {
+    parsed += template.substring(
+      matched !== null ? matched.index + matched[0].length : 0,
+      curMatched.index
+    )
+    matched = curMatched
+    parsed += data[matched[1].trim()]
+  }
+  parsed += template.substr(matched.index + matched[0].length)
+  return parsed
 }
 
 module.exports = leo
