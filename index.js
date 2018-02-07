@@ -1,21 +1,47 @@
+var escape = require('./utils').escape
+
 var leo = function(template, data) {
-  var re = /<%(.+?)%>/g
-  var parsed = ''
+  var tplRe = /<%(.+?)%>/g
+  var reservedRe = /(if|else|for|switch|case|break|default|while|continue|do|{|})/g
+  var parsed = 'var lines = [];\n' +
+    'var rst;\n'
   var curMatched = null
   var matched = null
 
-  while (curMatched = re.exec(template)) {
-    parsed += template.substring(
+  parsed += 'with(' + JSON.stringify(data) + ') {\n'
+
+  var generate = function(line, isJs) {
+    if (line.length > 0) {
+      if (isJs) {
+        if (reservedRe.test(line)) {
+          parsed += line + '\n'
+        } else {
+          parsed += 'lines.push(' + '\"(' + escape(line) + ')\"' + ');\n'
+        }
+      } else {
+        parsed += 'lines.push(' + '\"\\\"' + escape(line) + '\\\"\"' + ');\n'
+      }
+    }
+  }
+
+  while (curMatched = tplRe.exec(template)) {
+    var preStr = template.substring(
       matched !== null ? matched.index + matched[0].length : 0,
       curMatched.index
     )
+    generate(preStr)
+    generate(curMatched[1].trim(), true)
     matched = curMatched
-    with(data) {
-      parsed += eval(matched[1].trim())
-    }
   }
-  parsed += template.substr(matched.index + matched[0].length)
-  return parsed
+  var end = template.substr(matched.index + matched[0].length)
+  generate(end)
+
+  parsed += 'rst = eval(lines.join(\" + \"));\n' +
+    '}\n' +
+    'return rst'
+
+  var fun = new Function(parsed)
+  return fun()
 }
 
 module.exports = leo
