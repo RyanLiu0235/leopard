@@ -10,7 +10,9 @@ var leo = function(template, data) {
       curMatched.index
     )
     matched = curMatched
-    parsed += data[matched[1].trim()]
+    with(data) {
+      parsed += eval(matched[1].trim())
+    }
   }
   parsed += template.substr(matched.index + matched[0].length)
   return parsed
