@@ -8,7 +8,7 @@ A simple HTML template, currently a parser.
 var leo = require('leopard')
 var tpl = '<p>I am <% name %>!</p>'
 var data = {
-	name: 'Leopard'
+  name: 'Leopard'
 }
 
 var html = leo(tpl, data) // '<p>I am Leopard!</p>'
@@ -22,7 +22,7 @@ All the templates are supposed to be wrapped in open delimeter '<%' and close de
 
 ``` js
 var data = {
-	name: 'Leopard'
+  name: 'Leopard'
 }
 var text = '<p>I am <% name %>!</p>'
 ```
