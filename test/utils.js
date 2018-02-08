@@ -4,7 +4,7 @@ var escape = utils.escape
 
 describe('utils', function() {
   describe('escape', function() {
-    it('should escape \', \", <, >', function() {
+    it('should escape \", <, >', function() {
       var raw = '<a href="javascript:;">This is a link</a>'
       var escapeString = escape(raw)
       assert.strictEqual(

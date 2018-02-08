@@ -1,6 +1,7 @@
 var escape = require('./utils').escape
 
 var leo = function(template, data) {
+  data = data || {}
   var tplRe = /<%(.+?)%>/g
   var reservedRe = /(if|else|for|switch|case|break|default|while|continue|do|{|})/g
   var parsed = 'var lines = [];\n' +
@@ -13,7 +14,7 @@ var leo = function(template, data) {
   var generate = function(line, isJs) {
     if (line.length > 0) {
       if (isJs) {
-        if (reservedRe.test(line)) {
+        if (line.match(reservedRe)) {
           parsed += line + '\n'
         } else {
           parsed += 'lines.push(' + '\"(' + escape(line) + ')\"' + ');\n'

@@ -46,4 +46,16 @@ describe('leopard', function() {
     var template = leo(conditions, conditionData)
     assert.strictEqual(template, escape('<span class=\"realname\">leopard</span>'))
   })
+
+  it('handles loops', function() {
+    var loops = 'Now I repeat: ' +
+      '<ul>' +
+      '<% for (var i = 0; i < 3; i++) { %>' +
+      '<li>I am Leopard!</li>' +
+      '<% } %>' +
+      '</ul>'
+
+    var template = leo(loops)
+    assert.strictEqual(template, escape('Now I repeat: <ul><li>I am Leopard!</li><li>I am Leopard!</li><li>I am Leopard!</li></ul>'))
+  })
 })
