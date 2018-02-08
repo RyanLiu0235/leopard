@@ -3,7 +3,7 @@ var escape = require('./utils').escape
 var leo = function(template, data) {
   data = data || {}
   var tplRe = /<%(.+?)%>/g
-  var reservedRe = /(if|else|for|switch|case|break|default|while|continue|do|{|})/g
+  var reservedRe = /(if|else|for|switch|case|break|default|while|continue|do|{|})/
   var parsed = 'var lines = [];\n' +
     'var rst;\n'
   var curMatched = null
@@ -14,7 +14,7 @@ var leo = function(template, data) {
   var generate = function(line, isJs) {
     if (line.length > 0) {
       if (isJs) {
-        if (line.match(reservedRe)) {
+        if (reservedRe.test(line)) {
           parsed += line + '\n'
         } else {
           parsed += 'lines.push(' + '\"(' + escape(line) + ')\"' + ');\n'

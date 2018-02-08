@@ -1,6 +1,6 @@
 var assert = require('assert')
-var escape = require('../utils').escape
-var leo = require('../')
+var escape = require('../src/utils').escape
+var leo = require('../src')
 
 var basicData = {
   a: 'Leopard',

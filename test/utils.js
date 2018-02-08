@@ -1,5 +1,5 @@
 var assert = require('assert')
-var utils = require('../utils')
+var utils = require('../src/utils')
 var escape = utils.escape
 
 describe('utils', function() {
