@@ -17,19 +17,19 @@ var conditionData = {
 
 describe('leopard', function() {
   it('inits with simplest config', function() {
-    var template = leo('<p>This is <% a %>!</p>', basicData)
+    var template = leo('<p>This is <%= a %>!</p>', basicData)
     assert.strictEqual(template, escape('<p>This is Leopard!</p>'))
   })
 
   it('handles multiple expressions', function() {
-    var template = leo('<p>This is <% a %>, AKA <% b %>!</p>', basicData)
+    var template = leo('<p>This is <%= a %>, AKA <%= b %>!</p>', basicData)
     assert.strictEqual(template, escape('<p>This is Leopard, AKA leo!</p>'))
   })
 
   it('handles complex expressions', function() {
-    var template = leo('<p>m + n = <% m + n %></p>', basicData)
+    var template = leo('<p>m + n = <%= m + n %></p>', basicData)
     var template_2 = leo(
-      '<p>I am Leopard<% \', AKA \' + (isOk ? nickname : realname) + \'!\' %></p>',
+      '<p>I am Leopard<%= \', AKA \' + (isOk ? nickname : realname) + \'!\' %></p>',
       conditionData
     )
     assert.strictEqual(template, escape('<p>m + n = 3</p>'))
@@ -38,9 +38,9 @@ describe('leopard', function() {
 
   it('handles conditions', function() {
     var conditions = '<% if (isOk) { %>' +
-      '<span class=\"nickname\"><% nickname %></span>' +
+      '<span class=\"nickname\"><%= nickname %></span>' +
       '<% } else { %>' +
-      '<span class=\"realname\"><% realname %></span>' +
+      '<span class=\"realname\"><%= realname %></span>' +
       '<% } %>'
 
     var template = leo(conditions, conditionData)
@@ -50,12 +50,12 @@ describe('leopard', function() {
   it('handles loops', function() {
     var loops = 'Now I repeat: ' +
       '<ul>' +
-      '<% for (var i = 0; i < 3; i++) { %>' +
-      '<li>I am Leopard!</li>' +
+      '<% for (var i = 0; i < 2; i++) { %>' +
+      '<li><%= i %>: I am Leopard!</li>' +
       '<% } %>' +
       '</ul>'
 
     var template = leo(loops)
-    assert.strictEqual(template, escape('Now I repeat: <ul><li>I am Leopard!</li><li>I am Leopard!</li><li>I am Leopard!</li></ul>'))
+    assert.strictEqual(template, escape('Now I repeat: <ul><li>0: I am Leopard!</li><li>1: I am Leopard!</li></ul>'))
   })
 })
