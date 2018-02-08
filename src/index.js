@@ -1,4 +1,7 @@
 var escape = require('./utils').escape
+var escapeQuotes = function(str) {
+  return str.replace(/"/g, '\\"')
+}
 
 /**
  * parse the given `tpl` and return Function body string
@@ -35,10 +38,10 @@ var parser = function(tpl, data) {
       var type = line.charAt(0)
       switch (type) {
         case '=':
-          push(escape(line.substr(1).trim()))
+          push('escape(' + line.substr(1).trim() + ')')
           break
         case '-':
-          push(escape(line.substr(1).trim()))
+          push(line.substr(1).trim())
           break
         default:
           body += line + '\n'
@@ -52,19 +55,13 @@ var parser = function(tpl, data) {
       matched !== null ? matched.index + matched[0].length : 0,
       curMatched.index
     )
-    if (html) {
-      push('\"' + escape(html) + '\"')
-    }
+    html && push('\"' + escapeQuotes(html) + '\"')
     var js = curMatched[1].trim()
-    if (js) {
-      generate(js)
-    }
+    js && generate(js)
     matched = curMatched
   }
   var end = tpl.substr(matched.index + matched[0].length)
-  if (end) {
-    push('\"' + escape(end) + '\"')
-  }
+  end && push('\"' + escapeQuotes(end) + '\"')
   body += 'rst = lines.join(\"\");\n' +
     '}\n' +
     'return rst;'
@@ -81,8 +78,8 @@ var parser = function(tpl, data) {
  */
 var compiler = function(tpl, data) {
   var body = parser(tpl, data)
-  var fun = new Function(body)
-  return fun()
+  var fun = new Function('escape', body)
+  return fun.call(this, escape)
 }
 
 var leo = compiler

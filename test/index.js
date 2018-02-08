@@ -18,12 +18,12 @@ var conditionData = {
 describe('leopard', function() {
   it('inits with simplest config', function() {
     var template = leo('<p>This is <%= a %>!</p>', basicData)
-    assert.strictEqual(template, escape('<p>This is Leopard!</p>'))
+    assert.strictEqual(template, '<p>This is Leopard!</p>')
   })
 
   it('handles multiple expressions', function() {
     var template = leo('<p>This is <%= a %>, AKA <%= b %>!</p>', basicData)
-    assert.strictEqual(template, escape('<p>This is Leopard, AKA leo!</p>'))
+    assert.strictEqual(template, '<p>This is Leopard, AKA leo!</p>')
   })
 
   it('handles complex expressions', function() {
@@ -32,8 +32,22 @@ describe('leopard', function() {
       '<p>I am Leopard<%= \', AKA \' + (isOk ? nickname : realname) + \'!\' %></p>',
       conditionData
     )
-    assert.strictEqual(template, escape('<p>m + n = 3</p>'))
-    assert.strictEqual(template_2, escape('<p>I am Leopard, AKA leopard!</p>'))
+    assert.strictEqual(template, '<p>m + n = 3</p>')
+    assert.strictEqual(template_2, '<p>I am Leopard, AKA leopard!</p>')
+  })
+
+  it('handles html-expected interpolations and text-expected interpolations', function() {
+    var string = '<p>html tags can be escaped and rendered as string: <%= html %>.' +
+      ' Or can still rendered as html: <%- html %></p>'
+    var data = {
+      html: '<em>Leopard</em>'
+    }
+    var template = leo(string, data)
+    assert.strictEqual(template, '<p>html tags can be escaped and rendered as string: ' +
+      escape(data.html) +
+      '. Or can still rendered as html: ' +
+      data.html +
+      '</p>')
   })
 
   it('handles conditions', function() {
@@ -44,7 +58,7 @@ describe('leopard', function() {
       '<% } %>'
 
     var template = leo(conditions, conditionData)
-    assert.strictEqual(template, escape('<span class=\"realname\">leopard</span>'))
+    assert.strictEqual(template, '<span class=\"realname\">leopard</span>')
   })
 
   it('handles loops', function() {
@@ -56,6 +70,6 @@ describe('leopard', function() {
       '</ul>'
 
     var template = leo(loops)
-    assert.strictEqual(template, escape('Now I repeat: <ul><li>0: I am Leopard!</li><li>1: I am Leopard!</li></ul>'))
+    assert.strictEqual(template, 'Now I repeat: <ul><li>0: I am Leopard!</li><li>1: I am Leopard!</li></ul>')
   })
 })
