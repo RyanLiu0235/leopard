@@ -6,7 +6,7 @@
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
-	(global.leopard = factory());
+	(global.Leopard = factory());
 }(this, (function () { 'use strict';
 
 var escape = function(str) {
@@ -17,6 +17,11 @@ var escape = function(str) {
     .replace(/"/g, '&quot;')
 };
 
+var utils = {
+	escape: escape
+};
+
+var escape$1 = utils.escape;
 var escapeQuotes = function(str) {
   return str.replace(/"/g, '\\"')
 };
@@ -97,11 +102,12 @@ var parser = function(tpl, data) {
 var compiler = function(tpl, data) {
   var body = parser(tpl, data);
   var fun = new Function('escape', body);
-  return fun.call(this, escape)
+  return fun.call(this, escape$1)
 };
 
 var leo = compiler;
+var src = leo;
 
-return leo;
+return src;
 
 })));

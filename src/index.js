@@ -1,4 +1,4 @@
-import { escape } from './utils'
+var escape = require('./utils').escape
 var escapeQuotes = function(str) {
   return str.replace(/"/g, '\\"')
 }
@@ -83,5 +83,4 @@ var compiler = function(tpl, data) {
 }
 
 var leo = compiler
-
-export default leo
+module.exports = leo

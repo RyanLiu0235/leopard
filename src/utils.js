@@ -1,4 +1,4 @@
-export var escape = function(str) {
+exports.escape = function(str) {
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')

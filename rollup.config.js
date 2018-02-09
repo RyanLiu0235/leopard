@@ -1,4 +1,5 @@
 var uglify = require('rollup-plugin-uglify')
+var cjs = require('rollup-plugin-commonjs')
 var version = require('./package.json').version
 var banner =
 `/**
@@ -12,16 +13,17 @@ export default [{
   output: {
     file: './dist/leopard.js',
     format: 'umd',
-    name: 'leopard',
+    name: 'Leopard',
     banner: banner
-  }
+  },
+  plugins: [cjs()]
 }, {
   input: './src/index.js',
   output: {
     file: './dist/leopard.min.js',
     format: 'umd',
-    name: 'leopard',
+    name: 'Leopard',
     banner: banner
   },
-  plugins: [uglify()]
+  plugins: [cjs(), uglify()]
 }]
