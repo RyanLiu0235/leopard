@@ -5,7 +5,7 @@
   "main": "./dist/leopard.js",
   "scripts": {
     "build": "rollup -c",
-    "test": "./node_modules/.bin/mocha",
+    "test": "./node_modules/.bin/mocha --recursive",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec",
     "codecov": "node ./codecov.js",
     "benchmark": "node ./benchmark.js"
