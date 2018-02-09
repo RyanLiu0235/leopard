@@ -52,22 +52,20 @@ p.parse = function(tpl, data) {
    * @param  {String} line
    */
   var generate = function(line) {
-    if (line.length > 0) {
-      var type = line.charAt(0)
-
-      switch (type) {
-        // for interpolations we should check filters
-        case '=':
-          push('escape(' + parseFilters(line.substr(1).trim()) + ')')
-          break
-        case '-':
-          push(parseFilters(line.substr(1).trim()))
-          break
-        default:
-          body += line + '\n'
+    var type = line.charAt(0)
+    if (['=', '-'].indexOf(type) > -1) {
+      var expression = line.substr(1).trim()
+      if (expression === '') return
+      if (type === '=') {
+        push('escape(' + parseFilters(expression) + ')')
+      } else {
+        push(parseFilters(expression))
       }
+    } else {
+      body += line + '\n'
     }
   }
+
   curMatched = delimeterRE.exec(tpl)
   while (curMatched) {
     // This is raw HTML
@@ -83,6 +81,7 @@ p.parse = function(tpl, data) {
   }
   var end = tpl.substr(matched.index + matched[0].length)
   end && push('"' + escapeQuotes(end) + '"')
+
   body += 'rst = lines.join("");\n' +
     '}\n' +
     'return rst;'

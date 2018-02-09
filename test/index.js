@@ -22,6 +22,12 @@ describe('leopard', function() {
     assert.strictEqual(template, '<p>This is Leopard!</p>')
   })
 
+  it('should ignore empty interpolations or statements', function() {
+    var leo = new Leo()
+    var template = leo.compile('<p>This is <%=  %><%  %>!</p>')
+    assert.strictEqual(template, '<p>This is !</p>')
+  })
+
   it('handles multiple expressions', function() {
     var leo = new Leo()
     var template = leo.compile('<p>This is <%= a %>, AKA <%= b %>!</p>', basicData)
