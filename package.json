@@ -4,6 +4,7 @@
   "description": "a simple HTML template engine",
   "main": "index.js",
   "scripts": {
+    "build": "rollup -c",
     "test": "./node_modules/.bin/mocha",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec",
     "codecov": "node ./codecov.js",
@@ -13,7 +14,10 @@
     "type": "git",
     "url": "git+https://github.com/stop2stare/leopard.git"
   },
-  "keywords": ["leopard", "template"],
+  "keywords": [
+    "leopard",
+    "template"
+  ],
   "author": "liucheng",
   "license": "WTFPL",
   "bugs": {
@@ -23,6 +27,8 @@
   "devDependencies": {
     "codecov": "^3.0.0",
     "istanbul": "^0.4.5",
-    "mocha": "^5.0.0"
+    "mocha": "^5.0.0",
+    "rollup": "^0.55.3",
+    "rollup-plugin-uglify": "^3.0.0"
   }
 }
