@@ -1,4 +1,4 @@
-# leopard-template [![Build Status](https://travis-ci.org/stop2stare/leopard.svg?branch=master)](https://travis-ci.org/stop2stare/leopard) [![codecov](https://codecov.io/gh/stop2stare/leopard/branch/master/graph/badge.svg)](https://codecov.io/gh/stop2stare/leopard) [![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/leopard-template)
+# leopard-template [![Build Status](https://travis-ci.org/stop2stare/leopard.svg?branch=master)](https://travis-ci.org/stop2stare/leopard) [![codecov](https://codecov.io/gh/stop2stare/leopard/branch/master/graph/badge.svg)](https://codecov.io/gh/stop2stare/leopard) [![npm](https://img.shields.io/npm/v/leopard-template.svg)](https://www.npmjs.com/package/leopard-template)
 
 A simple HTML template engine, currently a parser. Basically implements ejs syntax.
 
