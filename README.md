@@ -4,10 +4,10 @@ A simple HTML template engine, currently a parser. Basically implements ejs synt
 
 ## Examples
 
-You can simple run the [examples here](https://github.com/stop2stare/leopard/tree/master/examples).
+You can simply run the [examples here](https://github.com/stop2stare/leopard/tree/master/examples).
 
 ``` js
-var leo = require('leopard')
+var leo = require('leopard-template')
 var tpl = '<p>I am <%= name %>!</p>'
 var data = {
   name: 'Leopard'

@@ -1,6 +1,22 @@
+var filters = require('./filters')
 var escape = require('./utils').escape
 var escapeQuotes = function(str) {
   return str.replace(/"/g, '\\"')
+}
+
+/**
+ * check if there is filters in expressions
+ * expect format:
+ * - 'name | capitalize | reverse'
+ * and this will be compile into:
+ * - 'reverse(capitalize(name))'
+ *
+ * @param  {String} line
+ * @return {String}
+ */
+var parseFilters = function(line) {
+  var segments = line.split('|')
+  return segments.reduce((accumulator, f) => f.trim() + '(' + accumulator.trim() + ')')
 }
 
 /**
@@ -36,12 +52,14 @@ var parser = function(tpl, data) {
   var generate = function(line) {
     if (line.length > 0) {
       var type = line.charAt(0)
+
       switch (type) {
+        // for interpolations we should check filters
         case '=':
-          push('escape(' + line.substr(1).trim() + ')')
+          push('escape(' + parseFilters(line.substr(1).trim()) + ')')
           break
         case '-':
-          push(line.substr(1).trim())
+          push(parseFilters(line.substr(1).trim()))
           break
         default:
           body += line + '\n'
@@ -78,9 +96,12 @@ var parser = function(tpl, data) {
  */
 var compiler = function(tpl, data) {
   var body = parser(tpl, data)
-  var fun = new Function('escape', body)
-  return fun.call(this, escape)
+
+  // 注入过滤器
+  var fun = new Function('escape', ...Object.keys(filters), body)
+  return fun.call(this, escape, ...Object.values(filters))
 }
 
 var leo = compiler
+
 module.exports = leo

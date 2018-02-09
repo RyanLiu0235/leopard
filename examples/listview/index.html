@@ -10,8 +10,12 @@
 <body>
   <div id="app"></div>
   <script type="text/javascript">
-  var tpl = 'Now I repeat: ' +
-    '<ul>' +
+  var tpl = '<ul style=\"float:left;\">' +
+    '<% for (var i = 0; i < 20; i++) { %>' +
+    '<li><%= i %>: I am <%= name %>!</li>' +
+    '<% } %>' +
+    '</ul>' +
+    '<ul style=\"float:left;\">' +
     '<% for (var i = 0; i < 20; i++) { %>' +
     '<li><%= i %>: I am <%- name %>!</li>' +
     '<% } %>' +

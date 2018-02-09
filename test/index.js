@@ -72,4 +72,10 @@ describe('leopard', function() {
     var template = leo(loops)
     assert.strictEqual(template, 'Now I repeat: <ul><li>0: I am Leopard!</li><li>1: I am Leopard!</li></ul>')
   })
+
+  it('handles filters in interpolations', function() {
+    var filters = '<p><%= \"leopard\" | capitalize | reverse %></p>'
+    var template = leo(filters)
+    assert.strictEqual(template, '<p>drapoeL</p>')
+  })
 })
