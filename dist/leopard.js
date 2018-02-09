@@ -1,5 +1,5 @@
 /**
- * leopard v0.0.1
+ * leopard v1.0.0
  * (c) 2018 Ryan Liu
  * @license WTFPL
  */
@@ -26,6 +26,24 @@ var escapeQuotes = function(str) {
   return str.replace(/"/g, '\\"')
 };
 
+function Leopard() {}
+var p = Leopard.prototype;
+
+/**
+ * check if there is filters in expressions
+ * expect format:
+ * - 'name | capitalize | reverse'
+ * and this will be compile into:
+ * - 'reverse(capitalize(name))'
+ *
+ * @param  {String} line
+ * @return {String}
+ */
+var parseFilters = function(line) {
+  var segments = line.split('|');
+  return segments.reduce((accumulator, f) => f.trim() + '(' + accumulator.trim() + ')')
+};
+
 /**
  * parse the given `tpl` and return Function body string
  *
@@ -33,7 +51,7 @@ var escapeQuotes = function(str) {
  * @param  {Object} data
  * @return {String}
  */
-var parser = function(tpl, data) {
+p.parse = function(tpl, data) {
   data = data || {};
   var delimeterRE = /<%(.+?)%>/g;
   var curMatched = null;
@@ -59,12 +77,14 @@ var parser = function(tpl, data) {
   var generate = function(line) {
     if (line.length > 0) {
       var type = line.charAt(0);
+
       switch (type) {
+        // for interpolations we should check filters
         case '=':
-          push('escape(' + line.substr(1).trim() + ')');
+          push('escape(' + parseFilters(line.substr(1).trim()) + ')');
           break
         case '-':
-          push(line.substr(1).trim());
+          push(parseFilters(line.substr(1).trim()));
           break
         default:
           body += line + '\n';
@@ -99,14 +119,62 @@ var parser = function(tpl, data) {
  * @param  {Object} data
  * @return {String}
  */
-var compiler = function(tpl, data) {
-  var body = parser(tpl, data);
-  var fun = new Function('escape', body);
-  return fun.call(this, escape$1)
+p.compile = function(tpl, data) {
+  var body = this.parse(tpl, data);
+  // 注入过滤器
+  var fun = new Function('escape', ...Object.keys(p), body);
+  return fun.call(p, escape$1, ...Object.values(p))
 };
 
-var leo = compiler;
-var src = leo;
+var instance = Leopard;
+
+/**
+ * util for adding filters to Leopard,
+ * return Leopard for chaining invoking
+ *
+ * @param  {String} name
+ * @param  {Function} handler
+ * @return {Leopard}
+ */
+function filter(name, handler) {
+  /* istanbul ignore if */
+  if (typeof handler !== 'function') {
+    throw new TypeError(
+      'Leopard: filter requires a function as handler, but got \"' +
+      typeof handler + '\" in filter \"' + name + '\"'
+    )
+  }
+  /* istanbul ignore if */
+  if (name in this.prototype) {
+    throw new Error('Leopard: filter \"' + name + '\" has been declared')
+  }
+  this.prototype[name] = handler;
+  return this
+}
+
+var filter_1 = filter;
+
+var capitalize = function(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1)
+};
+
+var reverse = function(string) {
+  return string.split('').reverse().join('')
+};
+
+var presets = { capitalize, reverse };
+
+// mount `filter` to Leopard as a util
+instance.filter = filter_1;
+
+// mount presets to Leopard.prototype so that every instance can use them
+var presetFilters = Object.keys(presets);
+for (var i = 0, l = presetFilters.length, name; i < l; i++) {
+  name = presetFilters[i];
+  instance.filter(name, presets[name]);
+}
+
+var src = instance;
 
 return src;
 

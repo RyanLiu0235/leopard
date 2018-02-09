@@ -14,7 +14,7 @@ export default [{
     file: './dist/leopard.js',
     format: 'umd',
     name: 'Leopard',
-    banner: banner
+    banner
   },
   plugins: [cjs()]
 }, {
@@ -23,7 +23,7 @@ export default [{
     file: './dist/leopard.min.js',
     format: 'umd',
     name: 'Leopard',
-    banner: banner
+    banner
   },
   plugins: [cjs(), uglify()]
 }]
