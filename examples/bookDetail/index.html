@@ -58,8 +58,8 @@
       { "count": 6, "name": "外国文学" }
     ]
   }
-
-  var html = Leopard(tpl, detail)
+  var leo = new Leopard()
+  var html = leo.compile(tpl, detail)
   document.getElementById('app').innerHTML = html
 
   </script>

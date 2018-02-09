@@ -7,13 +7,14 @@ A simple HTML template engine, currently a parser. Basically implements ejs synt
 You can simply run the [examples here](https://github.com/stop2stare/leopard/tree/master/examples).
 
 ``` js
-var leo = require('leopard-template')
+var Leopard = require('leopard-template')
+var leo = new Leopard()
 var tpl = '<p>I am <%= name %>!</p>'
 var data = {
   name: 'Leopard'
 }
 
-var html = leo(tpl, data) // '<p>I am Leopard!</p>'
+var html = leo.compile(tpl, data) // '<p>I am Leopard!</p>'
 ```
 
 ## Usage
@@ -27,12 +28,13 @@ $ npm install leopard-template
 Of course you can import **leopard-template** in whatever way you want
 ``` js
 // ES6 import
-import leo from 'leopard-template'
+import Leopard from 'leopard-template'
 
 // CommonJS require
-var leo = require('leopard-template')
+var Leopard = require('leopard-template')
 
 // and then you can start render your templates
+// var leo = new Leopard()
 ```
 
 Or you can also load with html `script` tag
@@ -90,6 +92,26 @@ var loops = 'Now I repeat: ' +
   '<li>I am Leopard!</li>' +
   '<% } %>' +
   '</ul>'
+```
+
+## Filters
+
+Filters are now supported in Leopard, you can custom a filter with `Leopard.filter`:
+
+``` js
+var Leopard = require('leopard-template')
+Leopard.filter('toUpperCase', function(string) {
+  return string.toUpperCase()
+})
+
+var text = '<p><%= 'leopard' | toUpperCase %></p>' // <p>LEOPARD</p>
+```
+
+And also, filters can be chained:
+
+``` js
+// `reverse` is a preset filter
+var text = '<p><%= 'leopard' | toUpperCase | reverse %></p>' // <p>DRAPOEL</p>
 ```
 
 ## Test

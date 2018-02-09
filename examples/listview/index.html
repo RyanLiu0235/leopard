@@ -17,13 +17,17 @@
     '</ul>' +
     '<ul style=\"float:left;\">' +
     '<% for (var i = 0; i < 20; i++) { %>' +
-    '<li><%= i %>: I am <%- name %>!</li>' +
+    '<li><%= i %>: I am <%- name | toUpperCase %>!</li>' +
     '<% } %>' +
     '</ul>'
   var data = {
     name: '<em>Leopard</em>'
   }
-  var html = Leopard(tpl, data)
+  Leopard.filter('toUpperCase', function(string) {
+    return string.toUpperCase()
+  })
+  var leo = new Leopard()
+  var html = leo.compile(tpl, data)
   document.getElementById('app').innerHTML = html
 
   </script>
