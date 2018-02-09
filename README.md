@@ -1,8 +1,10 @@
 # leopard [![Build Status](https://travis-ci.org/stop2stare/leopard.svg?branch=master)](https://travis-ci.org/stop2stare/leopard) [![codecov](https://codecov.io/gh/stop2stare/leopard/branch/master/graph/badge.svg)](https://codecov.io/gh/stop2stare/leopard)
 
-A simple HTML template, currently a parser. Basically implements ejs syntax.
+A simple HTML template engine, currently a parser. Basically implements ejs syntax.
 
 ## Examples
+
+You can simple run the [examples here](https://github.com/stop2stare/leopard/tree/master/examples).
 
 ``` js
 var leo = require('leopard')
@@ -25,6 +27,15 @@ var data = {
   name: 'Leopard'
 }
 var text = '<p>I am <%= name %>!</p>'
+```
+
+### HTML
+
+``` js
+var data = {
+  name: '<em>Leopard</em>'
+}
+var text = '<p>I am <%- name %>!</p>'
 ```
 
 ### Conditions

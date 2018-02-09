@@ -36,7 +36,7 @@ describe('leopard', function() {
     assert.strictEqual(template_2, '<p>I am Leopard, AKA leopard!</p>')
   })
 
-  it('handles html-expected interpolations and text-expected interpolations', function() {
+  it('handles html interpolations and text interpolations', function() {
     var string = '<p>html tags can be escaped and rendered as string: <%= html %>.' +
       ' Or can still rendered as html: <%- html %></p>'
     var data = {
