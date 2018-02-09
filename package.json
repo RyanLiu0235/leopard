@@ -1,8 +1,8 @@
 {
-  "name": "leopard",
+  "name": "leopard-template",
   "version": "0.0.1",
   "description": "a simple HTML template engine",
-  "main": "index.js",
+  "main": "./dist/leopard.js",
   "scripts": {
     "build": "rollup -c",
     "test": "./node_modules/.bin/mocha",
