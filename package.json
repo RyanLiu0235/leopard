@@ -6,6 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "test": "./node_modules/.bin/mocha --recursive",
+    "lint": "./node_modules/.bin/eslint src --fix",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec",
     "codecov": "node ./codecov.js",
     "benchmark": "node ./benchmark.js"
@@ -26,6 +27,12 @@
   "homepage": "https://github.com/stop2stare/leopard#readme",
   "devDependencies": {
     "codecov": "^3.0.0",
+    "eslint": "^4.17.0",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^6.0.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
     "istanbul": "^0.4.5",
     "mocha": "^5.0.0",
     "rollup": "^0.55.3",

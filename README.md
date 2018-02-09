@@ -96,7 +96,7 @@ var loops = 'Now I repeat: ' +
 
 ## Filters
 
-Filters are now supported in Leopard, you can custom a filter with `Leopard.filter`:
+Filters are now supported in Leopard, you can customize a filter with `Leopard.filter`:
 
 ``` js
 var Leopard = require('leopard-template')

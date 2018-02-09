@@ -68,21 +68,22 @@ p.parse = function(tpl, data) {
       }
     }
   }
-
-  while (curMatched = delimeterRE.exec(tpl)) {
+  curMatched = delimeterRE.exec(tpl)
+  while (curMatched) {
     // This is raw HTML
     var html = tpl.substring(
       matched !== null ? matched.index + matched[0].length : 0,
       curMatched.index
     )
-    html && push('\"' + escapeQuotes(html) + '\"')
+    html && push('"' + escapeQuotes(html) + '"')
     var js = curMatched[1].trim()
     js && generate(js)
     matched = curMatched
+    curMatched = delimeterRE.exec(tpl)
   }
   var end = tpl.substr(matched.index + matched[0].length)
-  end && push('\"' + escapeQuotes(end) + '\"')
-  body += 'rst = lines.join(\"\");\n' +
+  end && push('"' + escapeQuotes(end) + '"')
+  body += 'rst = lines.join("");\n' +
     '}\n' +
     'return rst;'
 
@@ -99,6 +100,7 @@ p.parse = function(tpl, data) {
 p.compile = function(tpl, data) {
   var body = this.parse(tpl, data)
   // 注入过滤器
+  // eslint-disable-next-line no-new-func
   var fun = new Function('escape', ...Object.keys(p), body)
   return fun.call(p, escape, ...Object.values(p))
 }
