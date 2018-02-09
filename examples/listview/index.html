@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>list view</title>
+  <script src="../../dist/leopard.js"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+  <script type="text/javascript">
+  var tpl = 'Now I repeat: ' +
+    '<ul>' +
+    '<% for (var i = 0; i < 20; i++) { %>' +
+    '<li><%= i %>: I am Leopard!</li>' +
+    '<% } %>' +
+    '</ul>'
+  var html = Leopard(tpl)
+
+  document.getElementById('app').innerHTML = html
+
+  </script>
+</body>
+
+</html>
