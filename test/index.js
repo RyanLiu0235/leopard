@@ -1,3 +1,5 @@
+var path = require('path')
+var fs = require('fs')
 var assert = require('assert')
 var escape = require('../src/utils').escape
 var Leo = require('../src')
@@ -63,13 +65,13 @@ describe('leopard', function() {
   it('handles conditions', function() {
     var leo = new Leo()
     var conditions = '<% if (isOk) { %>' +
-      '<span class=\"nickname\"><%= nickname %></span>' +
+      '<span class="nickname"><%= nickname %></span>' +
       '<% } else { %>' +
-      '<span class=\"realname\"><%= realname %></span>' +
+      '<span class="realname"><%= realname %></span>' +
       '<% } %>'
 
     var template = leo.compile(conditions, conditionData)
-    assert.strictEqual(template, '<span class=\"realname\">leopard</span>')
+    assert.strictEqual(template, '<span class="realname">leopard</span>')
   })
 
   it('handles loops', function() {
@@ -87,8 +89,20 @@ describe('leopard', function() {
 
   it('handles filters in interpolations', function() {
     var leo = new Leo()
-    var filters = '<p><%= \"leopard\" | capitalize | reverse %></p>'
+    var filters = '<p><%= "leopard" | capitalize | reverse %></p>'
     var template = leo.compile(filters)
     assert.strictEqual(template, '<p>drapoeL</p>')
+  })
+
+  it('should render a file into HTML string', function(done) {
+    var leo = new Leo()
+    var _html = fs.readFileSync(path.resolve(__dirname, './templates/intro.html'), 'utf-8')
+    leo.compileFile(
+      path.resolve(__dirname, './templates/intro.leo'),
+      conditionData,
+      function(err, html) {
+        assert.strictEqual(html, _html)
+        done()
+      })
   })
 })

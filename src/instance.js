@@ -1,3 +1,4 @@
+var fs = require('fs')
 var escape = require('./utils').escape
 var escapeQuotes = function(str) {
   return str.replace(/"/g, '\\"')
@@ -7,10 +8,10 @@ function Leopard() {}
 var p = Leopard.prototype
 
 /**
- * check if there is filters in expressions
+ * check if there are filters in expressions
  * expect format:
  * - 'name | capitalize | reverse'
- * and this will be compile into:
+ * and this will be compiled into:
  * - 'reverse(capitalize(name))'
  *
  * @param  {String} line
@@ -98,10 +99,31 @@ p.parse = function(tpl, data) {
  */
 p.compile = function(tpl, data) {
   var body = this.parse(tpl, data)
-  // 注入过滤器
   // eslint-disable-next-line no-new-func
   var fun = new Function('escape', ...Object.keys(p), body)
   return fun.call(p, escape, ...Object.values(p))
+}
+
+/**
+ * compile a file into HTML string,
+ * and pass it to `cb` as the first param
+ *
+ * @param  {String} file dir
+ * @param  {Object|null} data
+ * @param  {Function} cb
+ * @return {String}
+ */
+p.compileFile = function(dir, data, cb) {
+  var leo = this
+  fs.readFile(dir, 'utf-8', function(err, doc) {
+    if (err) {
+      cb(err)
+      return
+    }
+
+    var html = leo.compile(doc, data)
+    cb(null, html)
+  })
 }
 
 module.exports = Leopard
