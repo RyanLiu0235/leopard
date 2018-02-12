@@ -4,7 +4,11 @@ A simple HTML template engine, currently a parser. Basically implements ejs synt
 
 ## Examples
 
-You can simply run the [examples here](https://github.com/stop2stare/leopard/tree/master/examples).
+You can simply run the [examples here](https://github.com/stop2stare/leopard/tree/master/examples) with
+
+``` shell
+$ npm run serve:examples
+```
 
 ``` js
 var Leopard = require('leopard-template')
