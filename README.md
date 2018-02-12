@@ -63,8 +63,10 @@ var Leopard = require('leopard-template')
 Or you can also load with html `script` tag
 
 ``` html
-<script src="./node_modules/leopard-template/dist/leopard.min.js"></script>
+<script src="./node_modules/leopard-template/dist/leopard.browser.min.js"></script>
 ```
+
+> Note: `compileFile` is only available at server side, so we build two versions, if you want to use Leopard directly in browsers, use `leopard.browser.js`, otherwise you'll have to use `leopard.server.js`.
 
 ## Syntax
 
