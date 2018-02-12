@@ -9,12 +9,12 @@
 <body>
   <ul>
     <% for (var i = 0, l = examples.length; i < l; i++) { %>
-      <li>
-        <a href="/<%= examples[i] %>">
-          <%= examples[i] %>
-        </a>
-      </li>
-      <% } %>
+    <li>
+      <a href="/<%= examples[i] %>">
+        <%= examples[i] %>
+      </a>
+    </li>
+    <% } %>
   </ul>
 </body>
 

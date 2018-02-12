@@ -63,6 +63,6 @@ app.use(function(req, res) {
 })
 
 app.listen(port, function() {
-  console.log('🌏connect runs at http://localhost:', port)
+  console.log('🌏connect runs at http://localhost:' + port)
   opn('http://localhost:' + port)
 })
