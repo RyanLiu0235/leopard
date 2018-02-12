@@ -1,6 +1,7 @@
 var fs = require('fs')
 var escape = require('./utils').escape
-var escapeQuotes = function(str) {
+
+function escapeQuotes(str) {
   return str.replace(/"/g, '\\"')
 }
 
@@ -17,7 +18,7 @@ var p = Leopard.prototype
  * @param  {String} line
  * @return {String}
  */
-var parseFilters = function(line) {
+function parseFilters(line) {
   var segments = line.split('|')
   return segments.reduce((accumulator, f) => f.trim() + '(' + accumulator.trim() + ')')
 }
@@ -31,9 +32,6 @@ var parseFilters = function(line) {
  */
 p.parse = function(tpl, data) {
   data = data || {}
-  var delimeterRE = /<%(.+?)%>/g
-  var curMatched = null
-  var matched = null
   var body = 'var lines = [];\n' +
     'var rst;\n' +
     'with(' + JSON.stringify(data) + ') {\n'
@@ -48,14 +46,14 @@ p.parse = function(tpl, data) {
   }
 
   /**
-   * generate Function body
+   * add js code
    *
-   * @param  {String} line
+   * @param  {String} code
    */
-  var generate = function(line) {
-    var type = line.charAt(0)
+  function addJs(code) {
+    var type = code.charAt(0)
     if (['=', '-'].indexOf(type) > -1) {
-      var expression = line.substr(1).trim()
+      var expression = code.substr(1).trim()
       if (expression === '') return
       if (type === '=') {
         push('escape(' + parseFilters(expression) + ')')
@@ -63,25 +61,62 @@ p.parse = function(tpl, data) {
         push(parseFilters(expression))
       }
     } else {
-      body += line + '\n'
+      body += code + '\n'
     }
   }
 
-  curMatched = delimeterRE.exec(tpl)
-  while (curMatched) {
-    // This is raw HTML
-    var html = tpl.substring(
-      matched !== null ? matched.index + matched[0].length : 0,
-      curMatched.index
-    )
-    html && push('"' + escapeQuotes(html) + '"')
-    var js = curMatched[1].trim()
-    js && generate(js)
-    matched = curMatched
-    curMatched = delimeterRE.exec(tpl)
+  var nonEmptyRE = /\S/
+
+  function isNonEmpty(str) {
+    return nonEmptyRE.test(str)
   }
-  var end = tpl.substr(matched.index + matched[0].length)
-  end && push('"' + escapeQuotes(end) + '"')
+
+  // split tpl to lines
+  var lines = tpl.split('\n')
+  var delimeterRE = /<%(.+?)%>/g
+  var tailSpaceRE = /\s*$/
+  var line
+  for (var i = 0, l = lines.length; i < l; i++) {
+    var curMatched = null
+    var matched = null
+    var isLastLine = i === l - 1
+
+    // trim spaces at the end of line
+    line = lines[i].replace(tailSpaceRE, '')
+
+    // if there is content
+    if (isNonEmpty(line)) {
+      curMatched = delimeterRE.exec(line)
+
+      // if there is js
+      if (curMatched !== null) {
+        while (curMatched) {
+          // This is raw HTML
+          var html = line.substring(
+            matched !== null ? matched.index + matched[0].length : 0,
+            curMatched.index
+          )
+          if (isNonEmpty(html)) {
+            push('"' + escapeQuotes(html) + '"')
+          }
+          var js = curMatched[1].trim()
+          js && addJs(js)
+
+          matched = curMatched
+          curMatched = delimeterRE.exec(line)
+        }
+
+        var end = line.substr(matched.index + matched[0].length)
+        if (isNonEmpty(end)) {
+          push('"' + escapeQuotes(end) + (isLastLine ? '"' : '\\n"'))
+        }
+      } else {
+        push('"' + escapeQuotes(line) + (isLastLine ? '"' : '\\n"'))
+      }
+    } else {
+      body += '\n'
+    }
+  }
 
   body += 'rst = lines.join("");\n' +
     '}\n' +
