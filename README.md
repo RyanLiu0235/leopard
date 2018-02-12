@@ -17,6 +17,25 @@ var data = {
 var html = leo.compile(tpl, data) // '<p>I am Leopard!</p>'
 ```
 
+Or you can just render a file:
+
+``` js
+var path = require('path')
+var app = require('connect')()
+var Leopard = require('leopard-template')
+var leo = new Leopard()
+
+app.use('/test', function(req, res) {
+  leo.compileFile(
+    path.resolve(__dirname, './test.tpl'),
+    data,
+    function(err, html) {
+      req.write(html, 'utf-8')
+      req.end()
+    })
+})
+```
+
 ## Usage
 
 You can install **leopard-template** via npm
