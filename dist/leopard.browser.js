@@ -1,5 +1,5 @@
 /**
- * leopard v1.0.0
+ * leopard v1.1.0
  * (c) 2018 Ryan Liu
  * @license WTFPL
  */
@@ -22,27 +22,28 @@ var utils = {
 };
 
 var escape$1 = utils.escape;
-var escapeQuotes = function(str) {
+
+function escapeQuotes(str) {
   return str.replace(/"/g, '\\"')
-};
+}
 
 function Leopard() {}
 var p = Leopard.prototype;
 
 /**
- * check if there is filters in expressions
+ * check if there are filters in expressions
  * expect format:
  * - 'name | capitalize | reverse'
- * and this will be compile into:
+ * and this will be compiled into:
  * - 'reverse(capitalize(name))'
  *
  * @param  {String} line
  * @return {String}
  */
-var parseFilters = function(line) {
+function parseFilters(line) {
   var segments = line.split('|');
   return segments.reduce((accumulator, f) => f.trim() + '(' + accumulator.trim() + ')')
-};
+}
 
 /**
  * parse the given `tpl` and return Function body string
@@ -53,9 +54,6 @@ var parseFilters = function(line) {
  */
 p.parse = function(tpl, data) {
   data = data || {};
-  var delimeterRE = /<%(.+?)%>/g;
-  var curMatched = null;
-  var matched = null;
   var body = 'var lines = [];\n' +
     'var rst;\n' +
     'with(' + JSON.stringify(data) + ') {\n';
@@ -70,42 +68,79 @@ p.parse = function(tpl, data) {
   }
 
   /**
-   * generate Function body
+   * add js code
    *
-   * @param  {String} line
+   * @param  {String} code
    */
-  var generate = function(line) {
-    if (line.length > 0) {
-      var type = line.charAt(0);
-
-      switch (type) {
-        // for interpolations we should check filters
-        case '=':
-          push('escape(' + parseFilters(line.substr(1).trim()) + ')');
-          break
-        case '-':
-          push(parseFilters(line.substr(1).trim()));
-          break
-        default:
-          body += line + '\n';
+  function addJs(code) {
+    var type = code.charAt(0);
+    if (['=', '-'].indexOf(type) > -1) {
+      var expression = code.substr(1).trim();
+      if (expression === '') return
+      if (type === '=') {
+        push('escape(' + parseFilters(expression) + ')');
+      } else {
+        push(parseFilters(expression));
       }
+    } else {
+      body += code + '\n';
     }
-  };
-
-  while (curMatched = delimeterRE.exec(tpl)) {
-    // This is raw HTML
-    var html = tpl.substring(
-      matched !== null ? matched.index + matched[0].length : 0,
-      curMatched.index
-    );
-    html && push('\"' + escapeQuotes(html) + '\"');
-    var js = curMatched[1].trim();
-    js && generate(js);
-    matched = curMatched;
   }
-  var end = tpl.substr(matched.index + matched[0].length);
-  end && push('\"' + escapeQuotes(end) + '\"');
-  body += 'rst = lines.join(\"\");\n' +
+
+  var nonEmptyRE = /\S/;
+
+  function isNonEmpty(str) {
+    return nonEmptyRE.test(str)
+  }
+
+  // split tpl to lines
+  var lines = tpl.split('\n');
+  var delimeterRE = /<%(.+?)%>/g;
+  var tailSpaceRE = /\s*$/;
+  var line;
+  for (var i = 0, l = lines.length; i < l; i++) {
+    var curMatched = null;
+    var matched = null;
+    var isLastLine = i === l - 1;
+
+    // trim spaces at the end of line
+    line = lines[i].replace(tailSpaceRE, '');
+
+    // if there is content
+    if (isNonEmpty(line)) {
+      curMatched = delimeterRE.exec(line);
+
+      // if there is js
+      if (curMatched !== null) {
+        while (curMatched) {
+          // This is raw HTML
+          var html = line.substring(
+            matched !== null ? matched.index + matched[0].length : 0,
+            curMatched.index
+          );
+          if (isNonEmpty(html)) {
+            push('"' + escapeQuotes(html) + '"');
+          }
+          var js = curMatched[1].trim();
+          js && addJs(js);
+
+          matched = curMatched;
+          curMatched = delimeterRE.exec(line);
+        }
+
+        var end = line.substr(matched.index + matched[0].length);
+        if (isNonEmpty(end)) {
+          push('"' + escapeQuotes(end) + (isLastLine ? '"' : '\\n"'));
+        }
+      } else {
+        push('"' + escapeQuotes(line) + (isLastLine ? '"' : '\\n"'));
+      }
+    } else {
+      body += '\n';
+    }
+  }
+
+  body += 'rst = lines.join("");\n' +
     '}\n' +
     'return rst;';
 
@@ -121,7 +156,7 @@ p.parse = function(tpl, data) {
  */
 p.compile = function(tpl, data) {
   var body = this.parse(tpl, data);
-  // 注入过滤器
+  // eslint-disable-next-line no-new-func
   var fun = new Function('escape', ...Object.keys(p), body);
   return fun.call(p, escape$1, ...Object.values(p))
 };
@@ -140,13 +175,13 @@ function filter(name, handler) {
   /* istanbul ignore if */
   if (typeof handler !== 'function') {
     throw new TypeError(
-      'Leopard: filter requires a function as handler, but got \"' +
-      typeof handler + '\" in filter \"' + name + '\"'
+      'Leopard: filter requires a function as handler, but got "' +
+      typeof handler + '" in filter "' + name + '"'
     )
   }
   /* istanbul ignore if */
   if (name in this.prototype) {
-    throw new Error('Leopard: filter \"' + name + '\" has been declared')
+    throw new Error('Leopard: filter "' + name + '" has been declared')
   }
   this.prototype[name] = handler;
   return this
@@ -174,8 +209,8 @@ for (var i = 0, l = presetFilters.length, name; i < l; i++) {
   instance.filter(name, presets[name]);
 }
 
-var src = instance;
+var index_browser = instance;
 
-return src;
+return index_browser;
 
 })));

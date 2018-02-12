@@ -2,7 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var connect = require('connect')
 var opn = require('opn')
-var Leopard = require('../src')
+var Leopard = require('../src/index.server')
 var read = fs.readFileSync
 
 var app = connect()

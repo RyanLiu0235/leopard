@@ -1,5 +1,5 @@
 var assert = require('assert')
-var Leo = require('../../src')
+var Leo = require('../../src/index.browser')
 var filter = require('../../src/filter')
 
 var noop = function() {}
