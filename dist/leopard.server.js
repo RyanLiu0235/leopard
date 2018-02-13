@@ -1,5 +1,5 @@
 /**
- * leopard v1.1.0
+ * leopard v1.1.1
  * (c) 2018 Ryan Liu
  * @license WTFPL
  */
@@ -9,7 +9,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var fs = _interopDefault(require('fs'));
 
-var escape = function(str) {
+var escape$1 = function(str) {
   return String(str)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -18,16 +18,18 @@ var escape = function(str) {
 };
 
 var utils = {
-	escape: escape
+	escape: escape$1
 };
 
-var escape$1 = utils.escape;
+var escape$2 = utils.escape;
 
 function escapeQuotes(str) {
   return str.replace(/"/g, '\\"')
 }
 
-function Leopard() {}
+function Leopard(options) {
+  this.options = options || {};
+}
 var p = Leopard.prototype;
 
 /**
@@ -56,7 +58,7 @@ p.parse = function(tpl, data) {
   data = data || {};
   var body = 'var lines = [];\n' +
     'var rst;\n' +
-    'with(' + JSON.stringify(data) + ') {\n';
+    'with(data) {\n';
 
   /**
    * push a string into lines
@@ -155,10 +157,12 @@ p.parse = function(tpl, data) {
  * @return {String}
  */
 p.compile = function(tpl, data) {
+  data = data || {};
   var body = this.parse(tpl, data);
+
   // eslint-disable-next-line no-new-func
-  var fun = new Function('escape', ...Object.keys(p), body);
-  return fun.call(p, escape$1, ...Object.values(p))
+  var fun = new Function('escape', 'data', ...Object.keys(p), body);
+  return fun.call(p, escape$2, data, ...Object.values(p))
 };
 
 var instance = Leopard;
@@ -212,6 +216,17 @@ for (var i = 0, l = presetFilters.length, name; i < l; i++) {
 var index_browser = instance;
 
 function _compileFile(Leopard) {
+  // file cache
+  var cache = {};
+  var p = Leopard.prototype;
+
+  /**
+   * clean cache
+   */
+  p.cleanCache = function() {
+    cache = {};
+  };
+
   /**
    * compile a file into HTML string,
    * and pass it to `cb` as the first param
@@ -221,18 +236,38 @@ function _compileFile(Leopard) {
    * @param  {Function} cb
    * @return {String}
    */
-  Leopard.prototype.compileFile = function(dir, data, cb) {
+  p.compileFile = function(dir, data, cb) {
     var leo = this;
+    data = data || {};
+    if (this.options.cache) {
+      var hit = cache[dir];
+      if (hit) {
+        // eslint-disable-next-line no-new-func
+        var fun = new Function('escape', 'data', ...Object.keys(p), hit);
+        cb(null, fun.call(p, escape, data, ...Object.values(p)));
+      } else {
+        readFile(dir, data, cb, leo);
+      }
+    } else {
+      readFile(dir, data, cb, leo);
+    }
+  };
+
+  function readFile(dir, data, cb, leo) {
     fs.readFile(dir, 'utf-8', function(err, doc) {
       if (err) {
         cb(err);
         return
       }
 
+      // cache Function body if needed
+      if (leo.options.cache) {
+        cache[dir] = leo.parse(doc);
+      }
       var html = leo.compile(doc, data);
       cb(null, html);
     });
-  };
+  }
 }
 
 var compileFile = _compileFile;
