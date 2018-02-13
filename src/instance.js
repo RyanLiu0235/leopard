@@ -4,7 +4,9 @@ function escapeQuotes(str) {
   return str.replace(/"/g, '\\"')
 }
 
-function Leopard() {}
+function Leopard(options) {
+  this.options = options || {}
+}
 var p = Leopard.prototype
 
 /**
@@ -33,7 +35,7 @@ p.parse = function(tpl, data) {
   data = data || {}
   var body = 'var lines = [];\n' +
     'var rst;\n' +
-    'with(' + JSON.stringify(data) + ') {\n'
+    'with(data) {\n'
 
   /**
    * push a string into lines
@@ -132,10 +134,12 @@ p.parse = function(tpl, data) {
  * @return {String}
  */
 p.compile = function(tpl, data) {
+  data = data || {}
   var body = this.parse(tpl, data)
+
   // eslint-disable-next-line no-new-func
-  var fun = new Function('escape', ...Object.keys(p), body)
-  return fun.call(p, escape, ...Object.values(p))
+  var fun = new Function('escape', 'data', ...Object.keys(p), body)
+  return fun.call(p, escape, data, ...Object.values(p))
 }
 
 module.exports = Leopard

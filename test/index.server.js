@@ -11,7 +11,7 @@ var conditionData = {
 
 describe('leopard', function() {
   it('should render a template file into HTML string', function(done) {
-    var leo = new Leo()
+    var leo = new Leo({ cache: true })
     var _html = fs.readFileSync(path.resolve(__dirname, './templates/intro.html'), 'utf-8')
     leo.compileFile(
       path.resolve(__dirname, './templates/intro.tpl'),
