@@ -1,6 +1,6 @@
 # leopard-template [![Build Status](https://travis-ci.org/stop2stare/leopard.svg?branch=master)](https://travis-ci.org/stop2stare/leopard) [![codecov](https://codecov.io/gh/stop2stare/leopard/branch/master/graph/badge.svg)](https://codecov.io/gh/stop2stare/leopard) [![npm](https://img.shields.io/npm/v/leopard-template.svg)](https://www.npmjs.com/package/leopard-template)
 
-A simple HTML template engine, currently a parser. Basically implements ejs syntax.
+A simple HTML template engine. Basically implements ejs syntax.
 
 ## Examples
 
@@ -40,6 +40,8 @@ app.use('/test', function(req, res) {
 })
 ```
 
+> Note: `compileFile` is only available at server side, so we build two versions, if you want to use Leopard directly in browsers, use `leopard.browser.js`, otherwise you'll have to use `leopard.server.js`.
+
 ## Usage
 
 Install **leopard-template** via npm
@@ -66,8 +68,6 @@ Or load it with html `script` tag
 ``` html
 <script src="./node_modules/leopard-template/dist/leopard.browser.min.js"></script>
 ```
-
-> Note: `compileFile` is only available at server side, so we build two versions, if you want to use Leopard directly in browsers, use `leopard.browser.js`, otherwise you'll have to use `leopard.server.js`.
 
 ## Configurations
 

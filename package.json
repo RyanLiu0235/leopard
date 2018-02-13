@@ -9,7 +9,7 @@
     "lint": "./node_modules/.bin/eslint src --fix",
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec",
     "codecov": "node ./codecov.js",
-    "benchmark": "node ./benchmark.js",
+    "benchmark": "node ./benchmark/benchmark.js",
     "serve:examples": "./node_modules/.bin/nodemon ./examples/server.js"
   },
   "repository": {
