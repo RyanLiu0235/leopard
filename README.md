@@ -21,7 +21,7 @@ var data = {
 var html = leo.compile(tpl, data) // '<p>I am Leopard!</p>'
 ```
 
-Or you can just render a file:
+Or just render a file:
 
 ``` js
 var path = require('path')
@@ -42,13 +42,14 @@ app.use('/test', function(req, res) {
 
 ## Usage
 
-You can install **leopard-template** via npm
+Install **leopard-template** via npm
 
 ``` shell
 $ npm install leopard-template
 ```
 
-Of course you can import **leopard-template** in whatever way you want
+Then import **leopard-template** in whatever way you want
+
 ``` js
 // ES6 import
 import Leopard from 'leopard-template'
@@ -60,13 +61,21 @@ var Leopard = require('leopard-template')
 // var leo = new Leopard()
 ```
 
-Or you can also load with html `script` tag
+Or load it with html `script` tag
 
 ``` html
 <script src="./node_modules/leopard-template/dist/leopard.browser.min.js"></script>
 ```
 
 > Note: `compileFile` is only available at server side, so we build two versions, if you want to use Leopard directly in browsers, use `leopard.browser.js`, otherwise you'll have to use `leopard.server.js`.
+
+## Configurations
+
+``` js
+var leo = new Leopard(config)
+```
+
+* **cache**: cache Function body
 
 ## Syntax
 
