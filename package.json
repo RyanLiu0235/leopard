@@ -1,6 +1,6 @@
 {
   "name": "leopard-template",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "a simple HTML template engine",
   "main": "./dist/leopard.server.min.js",
   "scripts": {
