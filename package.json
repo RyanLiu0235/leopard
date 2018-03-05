@@ -10,7 +10,8 @@
     "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- -R spec",
     "codecov": "node ./codecov.js",
     "benchmark": "node ./benchmark/benchmark.js",
-    "serve:examples": "./node_modules/.bin/nodemon ./examples/server.js"
+    "serve:examples": "./node_modules/.bin/nodemon ./examples/server.js",
+    "commit": "git-cz"
   },
   "repository": {
     "type": "git",
@@ -28,6 +29,8 @@
   "homepage": "https://github.com/stop2stare/leopard#readme",
   "devDependencies": {
     "codecov": "^3.0.0",
+    "commitizen": "^2.9.6",
+    "cz-conventional-changelog": "^2.1.0",
     "eslint": "^4.17.0",
     "eslint-config-standard": "^11.0.0-beta.0",
     "eslint-plugin-import": "^2.8.0",
@@ -39,5 +42,10 @@
     "rollup": "^0.55.3",
     "rollup-plugin-commonjs": "^8.3.0",
     "rollup-plugin-uglify": "^3.0.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "node_modules/cz-conventional-changelog"
+    }
   }
 }
